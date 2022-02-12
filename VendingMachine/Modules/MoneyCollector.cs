@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace VendingMachine.Modules
 {
-    public enum Money
-    {
-        TwenyCent,
-        FiftyCent,
-        OneDollar,
-        TwoDollar,
-        FiveDollar
-    }
 
     public class MoneyCollector
     {

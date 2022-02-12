@@ -22,6 +22,20 @@ namespace VendingMachine.Modules
             Console.WriteLine("-----------------------------------------------------------------------");
             Console.WriteLine();
         }
+        public static void ShowCandies(List<Dictionary<CandyCode, int>> stock2)
+        {
+            foreach (Dictionary<CandyCode, int> row in stock2)
+            {
+                Console.WriteLine("------------------------------------------------------------------");
+                foreach (KeyValuePair<CandyCode, int> k in row)
+                {
+                    Console.Write("|" + k.Key.Code + "| " + k.Key.candy.GetType().Name + " : " + k.Value + " left, price: " + k.Key.candy.Price + " dollars\t\t");
+                }
+                Console.WriteLine("|");
+            }
+            Console.WriteLine("-----------------------------------------------------------------------");
+            Console.WriteLine();
+        }
 
         public static void MoneyInserted(MoneyCollector m)
         {
@@ -73,22 +87,27 @@ namespace VendingMachine.Modules
             bool test = false;
             bool leave = false;
             int drinkPrice = 0;
+            int candyPrice = 0;
 
             do
             {
                 ShowDrinks(Distributor.Stock);
+                ShowCandies(Distributor.Stock2);
                 Insert(Distributor.Collector);
                 ShowDrinks(Distributor.Stock);
+                ShowCandies(Distributor.Stock2);
 
                 do
                 {
-                    Console.WriteLine("Choose your drink using the code.");
+                    Console.WriteLine("Choose your drink or candy using the code.");
                     string code = Console.ReadLine();
                     DrinkCode drinkCode = new DrinkCode();
+                    CandyCode candyCode = new CandyCode();
 
 
 
                     bool predicate(DrinkCode x) => x.Code.ToString() == code;
+                    bool predicate2(CandyCode x) => x.Code.ToString() == code;
 
                     foreach (Dictionary<DrinkCode, int> row in Distributor.Stock)
                     {
@@ -98,35 +117,50 @@ namespace VendingMachine.Modules
                         }
                     }
 
+                    foreach (Dictionary<CandyCode, int> row in Distributor.Stock2)
+                    {
+                        if (Array.Find(row.Keys.ToArray(), predicate2) != null)
+                        {
+                            candyCode = Array.Find(row.Keys.ToArray(), predicate2);
+                        }
+                    }
+
 
 
                     Dictionary<DrinkCode, int> rowDrink = Distributor.Stock.Find(x => x.Keys.Contains(drinkCode));
+                    Dictionary<CandyCode, int> rowCandy = Distributor.Stock2.Find(x => x.Keys.Contains(candyCode));
 
-                    if (drinkCode.drink == null)
+                    if (drinkCode.drink == null || candyCode.candy == null)
                     {
                         Console.WriteLine("Wrong code");
                     }
-                    else if (rowDrink[drinkCode] == 0)
+                    else if (rowDrink[drinkCode] == 0 || rowCandy[candyCode] == 0)
                     {
                         Console.WriteLine("No more stock for this drink, try an other\n");
                     }
                     else
                     {
-                        while (Distributor.Collector.TotalMoneyInDouble < drinkCode.drink.Price)
+                        while (Distributor.Collector.TotalMoneyInDouble < drinkCode.drink.Price || Distributor.Collector.TotalMoneyInDouble < candyCode.candy.Price)
                         {
                             Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + drinkCode.drink.Price + " euros, you have to insert more !\n");
+                            Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + candyCode.candy.Price + " euros, you have to insert more !\n");
                             Insert(Distributor.Collector);
                         }
 
                         Console.WriteLine("You have received 1 " + drinkCode.drink.GetType().Name + "\n");
+                        Console.WriteLine("You have received 1 " + candyCode.candy.GetType().Name + "\n");
                         rowDrink[drinkCode]--;
+                        rowCandy[candyCode]--;
                         drinkPrice = Convert.ToInt32(drinkCode.drink.Price * 100);
+                        candyPrice = Convert.ToInt32(candyCode.candy.Price * 100);
                         test = true;
                     }
                 } while (!test);
 
                 Dictionary<Money, int> moneyReturned = Distributor.Collector.GetChange(drinkPrice);
+                Dictionary<Money, int> moneyReturned2 = Distributor.Collector.GetChange(candyPrice);
                 ShowMoneyReturned(moneyReturned, drinkPrice);
+                ShowMoneyReturnedFoCandy(moneyReturned, candyPrice);
                 Distributor.ResetMoneyCollector();
 
                 Console.WriteLine("\nLeave ?");
@@ -141,6 +175,18 @@ namespace VendingMachine.Modules
         public static void ShowMoneyReturned(Dictionary<Money, int> change, int drinkPrice)
         {
             double money = (double)(Distributor.Collector.TotalMoney - drinkPrice) / 100;
+            Console.WriteLine("The machine gave you back " + money + " :");
+            foreach (KeyValuePair<Money, int> coins in change)
+            {
+                string test = CoinInString(coins.Key);
+                Console.WriteLine("\t- " + coins.Value + " time " + test);
+
+            }
+        }
+
+        public static void ShowMoneyReturnedFoCandy(Dictionary<Money, int> change, int candyPrice)
+        {
+            double money = (double)(Distributor.Collector.TotalMoney - candyPrice) / 100;
             Console.WriteLine("The machine gave you back " + money + " :");
             foreach (KeyValuePair<Money, int> coins in change)
             {
