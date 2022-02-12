@@ -39,7 +39,7 @@ namespace VendingMachine.Modules
 
         public static void MoneyInserted(MoneyCollector m)
         {
-            Console.WriteLine("You already inserted " + m.TotalMoneyInDouble + " dollar :");
+            Console.WriteLine("You inserted " + m.TotalMoneyInDouble + " dollar :");
             Console.WriteLine(m.Show());
         }
 
@@ -53,7 +53,7 @@ namespace VendingMachine.Modules
             Console.WriteLine("\t3 : 50 cents");
             Console.WriteLine("\t4 : 20 cents");
             Console.WriteLine("\t5 : 5 dollar");
-            Console.WriteLine("\t9 : Exit");
+            Console.WriteLine("\t9 : please enter 9 after inserting money to see menu");
 
             do
             {
@@ -131,7 +131,7 @@ namespace VendingMachine.Modules
                         {
                             while (Distributor.Collector.TotalMoneyInDouble < drinkCode.drink.Price)
                             {
-                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + drinkCode.drink.Price + " euros, you have to insert more !\n");
+                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " dollar and the price for this product is " + drinkCode.drink.Price + " dollar, you have to insert more !\n");
                                 Insert(Distributor.Collector);
                             }
 
@@ -172,7 +172,7 @@ namespace VendingMachine.Modules
                         {
                             while (Distributor.Collector.TotalMoneyInDouble < candyCode.candy.Price)
                             {
-                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + candyCode.candy.Price + " euros, you have to insert more !\n");
+                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " dollar and the price for this product is " + candyCode.candy.Price + " dollar, you have to insert more !\n");
                                 Insert(Distributor.Collector);
                             }
                             
