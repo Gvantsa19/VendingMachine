@@ -10,7 +10,7 @@ namespace VendingMachine.Modules
     public class CandyCode
     {
         public Candy candy;
-        static int iterator = 0;
+        static int iterator = 6;
         public int Code { get; }
 
         public CandyCode()

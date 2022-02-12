@@ -99,62 +99,92 @@ namespace VendingMachine.Modules
 
                 do
                 {
-                    Console.WriteLine("Choose your drink or candy using the code.");
-                    string code = Console.ReadLine();
-                    DrinkCode drinkCode = new DrinkCode();
-                    CandyCode candyCode = new CandyCode();
-
-
-
-                    bool predicate(DrinkCode x) => x.Code.ToString() == code;
-                    bool predicate2(CandyCode x) => x.Code.ToString() == code;
-
-                    foreach (Dictionary<DrinkCode, int> row in Distributor.Stock)
+                    Console.WriteLine("1. drinks or 2. candies ?");
+                    int choice = int.Parse(Console.ReadLine());
+                    if (choice == 1)
                     {
-                        if (Array.Find(row.Keys.ToArray(), predicate) != null)
+                        Console.WriteLine("Choose your drink using the code.");
+                        string code = Console.ReadLine();
+                        DrinkCode drinkCode = new DrinkCode();
+
+                        bool predicate(DrinkCode x) => x.Code.ToString() == code;
+
+                        foreach (Dictionary<DrinkCode, int> row in Distributor.Stock)
                         {
-                            drinkCode = Array.Find(row.Keys.ToArray(), predicate);
-                        }
-                    }
-
-                    foreach (Dictionary<CandyCode, int> row in Distributor.Stock2)
-                    {
-                        if (Array.Find(row.Keys.ToArray(), predicate2) != null)
-                        {
-                            candyCode = Array.Find(row.Keys.ToArray(), predicate2);
-                        }
-                    }
-
-
-
-                    Dictionary<DrinkCode, int> rowDrink = Distributor.Stock.Find(x => x.Keys.Contains(drinkCode));
-                    Dictionary<CandyCode, int> rowCandy = Distributor.Stock2.Find(x => x.Keys.Contains(candyCode));
-
-                    if (drinkCode.drink == null || candyCode.candy == null)
-                    {
-                        Console.WriteLine("Wrong code");
-                    }
-                    else if (rowDrink[drinkCode] == 0 || rowCandy[candyCode] == 0)
-                    {
-                        Console.WriteLine("No more stock for this drink, try an other\n");
-                    }
-                    else
-                    {
-                        while (Distributor.Collector.TotalMoneyInDouble < drinkCode.drink.Price || Distributor.Collector.TotalMoneyInDouble < candyCode.candy.Price)
-                        {
-                            Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + drinkCode.drink.Price + " euros, you have to insert more !\n");
-                            Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + candyCode.candy.Price + " euros, you have to insert more !\n");
-                            Insert(Distributor.Collector);
+                            if (Array.Find(row.Keys.ToArray(), predicate) != null)
+                            {
+                                drinkCode = Array.Find(row.Keys.ToArray(), predicate);
+                            }
                         }
 
-                        Console.WriteLine("You have received 1 " + drinkCode.drink.GetType().Name + "\n");
-                        Console.WriteLine("You have received 1 " + candyCode.candy.GetType().Name + "\n");
-                        rowDrink[drinkCode]--;
-                        rowCandy[candyCode]--;
-                        drinkPrice = Convert.ToInt32(drinkCode.drink.Price * 100);
-                        candyPrice = Convert.ToInt32(candyCode.candy.Price * 100);
-                        test = true;
+                        Dictionary<DrinkCode, int> rowDrink = Distributor.Stock.Find(x => x.Keys.Contains(drinkCode));
+
+                        if (drinkCode.drink == null)
+                        {
+                            Console.WriteLine("Wrong code");
+                        }
+                        else if (rowDrink[drinkCode] == 0)
+                        {
+                            Console.WriteLine("No more stock for this drink, try an other\n");
+                        }
+                        else
+                        {
+                            while (Distributor.Collector.TotalMoneyInDouble < drinkCode.drink.Price)
+                            {
+                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + drinkCode.drink.Price + " euros, you have to insert more !\n");
+                                Insert(Distributor.Collector);
+                            }
+
+                            Console.WriteLine("You have received 1 " + drinkCode.drink.GetType().Name + "\n");
+                            rowDrink[drinkCode]--;
+                            drinkPrice = Convert.ToInt32(drinkCode.drink.Price * 100);
+                            test = true;
+                        }
+
                     }
+                    else if(choice == 2)
+                    {
+                        Console.WriteLine("Choose your candy using the code.");
+                        string code = Console.ReadLine();
+                        CandyCode candyCode = new CandyCode();
+
+                        bool predicate2(CandyCode x) => x.Code.ToString() == code;
+
+                        foreach (Dictionary<CandyCode, int> row in Distributor.Stock2)
+                        {
+                            if (Array.Find(row.Keys.ToArray(), predicate2) != null)
+                            {
+                                candyCode = Array.Find(row.Keys.ToArray(), predicate2);
+                            }
+                        }
+
+                        Dictionary<CandyCode, int> rowCandy = Distributor.Stock2.Find(x => x.Keys.Contains(candyCode));
+
+                        if (candyCode.candy == null)
+                        {
+                            Console.WriteLine("Wrong code");
+                        }
+                        else if (rowCandy[candyCode] == 0)
+                        {
+                            Console.WriteLine("No more stock for this drink, try an other\n");
+                        }
+                        else
+                        {
+                            while (Distributor.Collector.TotalMoneyInDouble < candyCode.candy.Price)
+                            {
+                                Console.WriteLine("You inserted " + Distributor.Collector.TotalMoneyInDouble + " euros and the price for this product is " + candyCode.candy.Price + " euros, you have to insert more !\n");
+                                Insert(Distributor.Collector);
+                            }
+                            
+                            Console.WriteLine("You have received 1 " + candyCode.candy.GetType().Name + "\n");
+                            rowCandy[candyCode]--;
+                            drinkPrice = Convert.ToInt32(candyCode.candy.Price * 100);
+                            test = true;
+                        }
+                    }
+                   
+
+                    
                 } while (!test);
 
                 Dictionary<Money, int> moneyReturned = Distributor.Collector.GetChange(drinkPrice);
