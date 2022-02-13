@@ -45,6 +45,7 @@ namespace VendingMachine.Modules
 
         public static void Insert(MoneyCollector m)
         {
+
             string choice;
 
             Console.WriteLine("Which coin do you want to insert ?");
@@ -166,7 +167,7 @@ namespace VendingMachine.Modules
                         }
                         else if (rowCandy[candyCode] == 0)
                         {
-                            Console.WriteLine("No more stock for this drink, try an other\n");
+                            Console.WriteLine("No more stock for this candy, try an other\n");
                         }
                         else
                         {
@@ -190,7 +191,7 @@ namespace VendingMachine.Modules
                 Dictionary<Money, int> moneyReturned = Distributor.Collector.GetChange(drinkPrice);
                 Dictionary<Money, int> moneyReturned2 = Distributor.Collector.GetChange(candyPrice);
                 ShowMoneyReturned(moneyReturned, drinkPrice);
-                ShowMoneyReturnedFoCandy(moneyReturned, candyPrice);
+                //ShowMoneyReturnedFoCandy(moneyReturned, candyPrice);
                 Distributor.ResetMoneyCollector();
 
                 Console.WriteLine("\nLeave ?");

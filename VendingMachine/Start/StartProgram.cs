@@ -18,6 +18,7 @@ namespace VendingMachine.Start
             Sprite.GetInstance().Price = 1;
             Skittles.GetInstance().Price = 1.50;
             Smarties.GetInstance().Price = 2;
+            MandMs.GetInstance().Price = 2.50;
 
             Dictionary<DrinkCode, int> d1 = new Dictionary<DrinkCode, int>
             {
